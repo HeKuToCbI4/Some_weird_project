@@ -23,7 +23,7 @@ class LogClass:
 
 
 class Configuration:
-    def __init__(self, configuration_path=os.path.join(os.path.dirname(os.getcwd()), 'configurations')):
+    def __init__(self, configuration_path=os.path.join(os.path.dirname(os.getcwd()), 'Configurations')):
         try:
             with open(configuration_path, 'r') as config_yaml:
                 self._config = yaml.load(config_yaml)
