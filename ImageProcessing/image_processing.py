@@ -2,7 +2,7 @@ import skimage.io as io
 import os.path as path
 import scipy.ndimage as ndimage
 
-import numpy
+import numpy as np
 
 memes = 'sergey.jpg'
 salem_sad = 'salem_sad.jpg'
@@ -14,11 +14,14 @@ sources = path.join(cwd, 'sources')
 results = path.join(cwd, 'results')
 
 
-def convolve(file_name, kernel, save=False):
+def convolve_as_grey(file_name, kernel, new_file_name=None, save=False):
     image = io.imread(path.join(sources, file_name), as_grey=True)
     out = ndimage.convolve(image, kernel)
     if save:
-        io.imsave(path.join(results, file_name), out)
+        if new_file_name is None:
+            io.imsave(path.join(results, file_name), out)
+        else:
+            io.imsave(path.join(results, new_file_name), out)
     return out
 
 
@@ -41,8 +44,18 @@ def negate(file_name, new_file_name=None, save=False):
     return image
 
 
+def sharpen(file_name, new_file_name=None, save=False):
+    kernel = np.array([[-1/9, -1/9, -1/9], [-1/9, 1, -1/9], [-1/9, -1/9, -1/9]])
+    convolve_as_grey(file_name, kernel, new_file_name=new_file_name, save=save)
+
+
+def blur(file_name, new_file_name=None, save=False):
+    kernel = np.array([[1 / 9, 1 / 9, 1 / 9], [1 / 9, 1 / 9, 1 / 9], [1 / 9, 1 / 9, 1 / 9]])
+    convolve_as_grey(file_name, kernel, new_file_name=new_file_name, save=save)
+
+
 def main():
-    convolve(memes, numpy.array([[1 / 9, 1 / 9, 1 / 9], [1 / 9, 1 / 9, 1 / 9], [1 / 9, 1 / 9, 1 / 9]]), save=True)
+    blur(salem_sad, save=True)
 
 
 if __name__ == '__main__':
