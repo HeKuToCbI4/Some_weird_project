@@ -1,8 +1,9 @@
 loggers:
-  -default_logger:
+  default_logger:
     name: 'Default Logger'
     log_class: 2
     log_script_information: yes
     log_to_file: no
     log_name: 'logfile.txt'
-
+  not_default_logger:
+    name: 'SOME'

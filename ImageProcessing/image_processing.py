@@ -10,7 +10,7 @@ harold = 'harold.jpg'
 image_processor = ImageProcessor()
 
 def main():
-    image_processor.gaussian(salem_hangover, 1, new_file_name='HANGOVER.jpg', save=True)
+    image_processor.negate(harold, save=True)
 
 
 if __name__ == '__main__':
