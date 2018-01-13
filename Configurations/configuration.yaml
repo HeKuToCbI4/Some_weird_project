@@ -7,3 +7,8 @@ loggers:
     log_name: 'logfile.txt'
   not_default_logger:
     name: 'SOME'
+
+
+
+databases:
+  default_db: 'C:\SQLite\bot_database_v1.db

@@ -1,4 +1,5 @@
 import os
+from datetime import datetime
 from inspect import currentframe, getframeinfo
 from threading import Lock
 
@@ -7,8 +8,6 @@ from Modules.Common.helper import Configuration
 cfg = Configuration().cfg
 default_log_location = 'C:/telegram_bot_logs/'
 
-
-###TODO: add timestamps to logs
 
 class Logger:
     default_log_parameters = cfg['loggers']['default_logger']
@@ -39,13 +38,15 @@ class Logger:
         if log_class >= self._log_class or self._log_to_file:
             frame_info = getframeinfo(currentframe().f_back)
             file_name = frame_info.filename.split('\\')[-1]
+            time = datetime.now().strftime('%d/%m/%Y %H:%M:%S.%f')
             if self._log_script_information:
-                string = '[{file_name}] ({line_number}) {logger_name}: {string}'.format(file_name=file_name,
-                                                                                        line_number=frame_info.lineno,
-                                                                                        logger_name=self._name,
-                                                                                        string=log_message)
+                string = '[{time} {logger_name}: {file_name}] ({line_number}): {string}'.format(file_name=file_name,
+                                                                                                line_number=frame_info.lineno,
+                                                                                                logger_name=self._name,
+                                                                                                string=log_message,
+                                                                                                time=time)
             else:
-                string = '{logger_name}: {string}'.format(logger_name=self._name, string=log_message)
+                string = '{time} {logger_name}: {string}'.format(logger_name=self._name, string=log_message, time=time)
             if log_class >= self._log_class:
                 print(string)
             if self._log_to_file:

@@ -23,15 +23,16 @@ class LogClass:
 
 
 class Configuration:
-    def __init__(self,
-                 configuration_path=os.path.join(os.path.dirname(os.getcwd()), 'Configurations', 'configuration.yaml')):
-        try:
-            with open(configuration_path, 'r') as config_yaml:
-                self._config = yaml.load(config_yaml)
-
-        except yaml.YAMLError as yaml_err:
-            raise yaml_err
+    __instance = None
 
     @property
-    def cfg(self):
-        return self._config
+    def cfg(self, custom_configuration_path=None):
+        configuration_path = os.path.join(os.path.dirname(os.getcwd()), 'Configurations',
+                                          'configuration.yaml') if custom_configuration_path is None else custom_configuration_path
+        if self.__instance is None:
+            try:
+                with open(configuration_path, 'r') as config_yaml:
+                    self._config = yaml.load(config_yaml)
+            except yaml.YAMLError as yaml_err:
+                raise yaml_err
+        return self.__instance._config
