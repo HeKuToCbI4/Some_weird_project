@@ -3,8 +3,8 @@ import datetime
 
 import requests
 
-from Modules import logger
-from Modules.helper import LogClass
+from Modules.Common import logger
+from Modules.Common.helper import LogClass
 
 OneDayForecast = collections.namedtuple('OneDayForecast',
                                         'description temp temp_min temp_max pressure humidity ')
@@ -25,7 +25,7 @@ def get_city_id(city):
         data = result.json()
 
         city_id = data['list'][0]['id']
-    except Exception as e:
+    except BaseException as e:
         weather_logger.log_string(LogClass.Exception, f'Exception {e} occured.')
         return None
     return city_id
@@ -41,7 +41,7 @@ def get_current_weather(city_id):
                                     data['main']['temp_max'], data['main']['pressure'], data['main']['humidity'])
             weather_logger.log_string(LogClass.Info, f'Got response: {data}')
 
-        except Exception as e:
+        except BaseException as e:
             weather_logger.log_string(LogClass.Exception, f"Exception (weather): {e}")
             return None
         return result

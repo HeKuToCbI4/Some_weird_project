@@ -1,14 +1,18 @@
+import datetime
+
 import vk_api
 
 from Configurations.vk_module_config import login, password
-from Modules.checker import Failure
-from Modules.helper import LogClass
-from Modules.logger import Logger
+from Modules.Common.checker import Failure
+from Modules.Common.helper import LogClass
+from Modules.Common.logger import Logger
 
 
 class VkModule:
     def __init__(self, custom_login=None, custom_password=None):
-        self.logger = Logger(name='Vk logger', log_script_information=True, log_to_file=True, log_name='vk_module_log')
+        self.logger = Logger(name='Vk logger', log_script_information=True, log_to_file=True,
+                             log_name='vk_module_log_{}.txt'.format(
+                                 datetime.datetime.now().strftime('%d_%m_%Y_%H_%M_%S')))
         self._password = password if custom_password is None else custom_password
         self._login = login if custom_login is None else custom_login
         self.logger.log_string(LogClass.Trace,
@@ -48,7 +52,7 @@ class VkModule:
             response = self.api.wall.get(owner_id=owner_id, count=count, **kwargs)
         else:
             response = self.api.wall.get(domain=domain, count=count, **kwargs)
-        self.logger.log_string(LogClass.Info, "Got response from {}: {}".format(destination, response))
+        self.logger.log_string(LogClass.Info, "Got response from {}".format(destination, response))
         if response['items']:
             return response['items']
         else:

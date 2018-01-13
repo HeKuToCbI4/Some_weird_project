@@ -1,4 +1,4 @@
-from ImageProcessing.ImageProcessor import ImageProcessor
+from Modules.ImageModule.ImageProcessor import ImageProcessor
 
 memes = 'sergey.jpg'
 salem_sad = 'salem_sad.jpg'

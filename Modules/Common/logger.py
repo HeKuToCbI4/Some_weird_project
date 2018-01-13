@@ -2,11 +2,13 @@ import os
 from inspect import currentframe, getframeinfo
 from threading import Lock
 
-from Modules.helper import Configuration
+from Modules.Common.helper import Configuration
 
 cfg = Configuration().cfg
 default_log_location = 'C:/telegram_bot_logs/'
 
+
+###TODO: add timestamps to logs
 
 class Logger:
     default_log_parameters = cfg['loggers']['default_logger']

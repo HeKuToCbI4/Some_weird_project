@@ -4,12 +4,12 @@ import telebot
 
 import telegrambot.config as config
 import telegrambot.weather_api as weather_api
-from Modules.helper import LogClass
-from Modules.logger import Logger
-from Modules.vk_module import VkModule
+from Modules.Common.helper import LogClass
+from Modules.Common.logger import Logger
+from Modules.VkModule.vk_module import VkModule
 from time import sleep
 from threading import Thread, Event
-from Modules.checker import Failure
+from Modules.Common.checker import Failure
 
 
 class TelegramBot:
@@ -39,7 +39,7 @@ class TelegramBot:
                 self.bot.send_message(message.chat.id, message_to_send)
                 log_string = 'Sent message: {message_to_send}'.format(message_to_send=message.text)
                 self.bot_logger.log_string(LogClass.Info, log_string)
-            except Exception as e:
+            except BaseException as e:
                 self.bot_logger.log_string(LogClass.Exception, 'Возникла ошибка при обработке погоды'.format(e))
 
         @self.bot.message_handler(commands=['monitor', 'off_monitor'])
@@ -49,7 +49,7 @@ class TelegramBot:
                 message_string = str(message.text).lower()
                 try:
                     target = message_string.split(' ')[1]
-                except Exception:
+                except BaseException:
                     message_to_send = 'Используйте формат /команда домен\nДомен-короткое имя страницы - цели.'
                     self.bot.send_message(message.chat.id, message_to_send)
                     raise Failure('Невозможно получить домен из сообщения {}'.format(message.text))
@@ -62,14 +62,15 @@ class TelegramBot:
                 self.bot.send_message(message.chat.id, message_to_send)
                 log_string = 'Sent message: {message_to_send}'.format(message_to_send=message_to_send)
                 self.bot_logger.log_string(LogClass.Info, log_string)
-            except Exception as e:
+            except BaseException as e:
                 self.bot_logger.log_string(LogClass.Exception, f'{e} occurred.')
 
         @self.bot.message_handler(content_types=['text'])
         def handle_messages(message):
-            self.bot.send_message(message.chat.id, message.text)
-            log_string = 'Sent message: {message_to_send}'.format(message_to_send=message.text)
-            self.bot_logger.log_string(LogClass.Info, log_string)
+            self.bot_logger.log_string(LogClass.Trace, 'Got message at {}: {}'.format(message.chat.id, message.text))
+            # self.bot.send_message(message.chat.id, message.text)
+            # log_string = 'Sent message: {message_to_send}'.format(message_to_send=message.text)
+            # self.bot_logger.log_string(LogClass.Info, log_string)
 
     def monitor_wall_posts(self, domain, chat_id):
         try:
@@ -80,7 +81,7 @@ class TelegramBot:
                     if not post['id'] in last_posts_ids:
                         self.bot.send_message(chat_id, "Новый пост на странице {}:\n{}".format(domain, post['text']))
                         last_posts_ids.append(post['id'])
-                sleep(20)
+                sleep(60)
                 if len(last_posts_ids) > 50:
                     last_posts_ids = last_posts_ids[:50]
         except:
