@@ -1,8 +1,9 @@
 import os
 from threading import Lock
-from Modules.Common.checker import Failure
 
 import yaml
+
+from Modules.Common.checker import Failure
 
 
 class ThreadSafeCounter:

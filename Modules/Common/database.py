@@ -32,3 +32,13 @@ class DataBase:
             self._cursor.execute(command)
         else:
             self._cursor.execute(command, params)
+
+    def backup_database(self):
+        pass
+
+    def restore_last_working_state(self):
+        pass
+
+    def commit_chages(self):
+        self.logger.log_string(LogClass.Trace, 'Chages to database saved')
+        self._connection.commit()

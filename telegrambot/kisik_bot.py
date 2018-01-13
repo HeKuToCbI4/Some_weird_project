@@ -1,15 +1,15 @@
 import datetime
+from threading import Thread, Event
+from time import sleep
 
 import telebot
 
 import telegrambot.config as config
 import telegrambot.weather_api as weather_api
+from Modules.Common.checker import Failure
 from Modules.Common.helper import LogClass
 from Modules.Common.logger import Logger
 from Modules.VkModule.vk_module import VkModule
-from time import sleep
-from threading import Thread, Event
-from Modules.Common.checker import Failure
 
 
 class TelegramBot:
@@ -104,6 +104,7 @@ class TelegramBot:
 
     def stop_bot(self):
         self.bot.stop_polling()
+
 
 def main():
     bot = TelegramBot()

@@ -1,10 +1,10 @@
 import smtplib
 
+from Configurations.google_mail_config import login, password
 from Modules.Common.checker import Failure
 from Modules.Common.helper import Configuration
 from Modules.Common.helper import LogClass
 from Modules.Common.logger import Logger
-from Configurations.google_mail_config import login, password
 
 cfg = Configuration().cfg
 smtp_config = cfg['smtp_servers']

@@ -11,7 +11,7 @@ loggers:
 
 
 databases:
-  default_db: 'C:\SQLite\bot_database_v1.db'
+  default_db: 'C:/bot_databases/bot_database_v1.db'
 
 
 smtp_servers:
