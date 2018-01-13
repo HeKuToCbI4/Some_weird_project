@@ -1,5 +1,6 @@
 import os
 from threading import Lock
+from Modules.Common.checker import Failure
 
 import yaml
 
@@ -27,12 +28,13 @@ class Configuration:
 
     @property
     def cfg(self, custom_configuration_path=None):
-        configuration_path = os.path.join(os.path.dirname(os.getcwd()), 'Configurations',
+        configuration_path = os.path.join(os.path.dirname(os.path.dirname(os.getcwd())), 'Configurations',
                                           'configuration.yaml') if custom_configuration_path is None else custom_configuration_path
-        if self.__instance is None:
+        if Configuration.__instance is None:
+            Configuration.__instance = Configuration()
             try:
                 with open(configuration_path, 'r') as config_yaml:
-                    self._config = yaml.load(config_yaml)
+                    Configuration.__instance._config = yaml.load(config_yaml)
             except yaml.YAMLError as yaml_err:
-                raise yaml_err
-        return self.__instance._config
+                raise Failure('{} occurred during config initialization.'.format(yaml_err))
+        return Configuration.__instance._config

@@ -37,7 +37,7 @@ class Logger:
         log_message = message.encode().decode('utf-8', 'ignore')
         if log_class >= self._log_class or self._log_to_file:
             frame_info = getframeinfo(currentframe().f_back)
-            file_name = frame_info.filename.split('\\')[-1]
+            file_name = frame_info.filename.split('/')[-1]
             time = datetime.now().strftime('%d/%m/%Y %H:%M:%S.%f')
             if self._log_script_information:
                 string = '[{time} {logger_name}: {file_name}] ({line_number}): {string}'.format(file_name=file_name,

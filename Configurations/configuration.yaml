@@ -11,4 +11,18 @@ loggers:
 
 
 databases:
-  default_db: 'C:\SQLite\bot_database_v1.db
+  default_db: 'C:\SQLite\bot_database_v1.db'
+
+
+smtp_servers:
+  connection_timeout: 60
+  servers:
+    default_server:
+      address: 'smtp.gmail.com'
+      port: 587
+    google:
+      address: 'smtp.gmail.com'
+      port: 587
+    mail_ru:
+     address: 'smtp.mail.ru'
+     port: 465
