@@ -23,6 +23,18 @@ class BotDatabase(DataBase):
     def get_wall_id_by_domain(self, domain):
         return self._cursor.execute('SELECT id FROM vk_walls WHERE domain=?', (domain,))
 
+    def get_weather_subscriptions(self, chat_id):
+        return self._cursor.execute('SELECT * FROM weather_subscriptions WHERE id_chat=?', (chat_id,))
+
+    def get_vk_subscriptions(self, chat_id):
+        return self._cursor.execute('SELECT * FROM vk_wall_subscriptions WHERE id_chat=?', (chat_id,))
+
+    def get_domain_by_id(self, domain_id):
+        return self._cursor.execute('SELECT domain FROM vk_walls WHERE id=?', (domain_id,))
+
+    def get_city_by_id(self, city_id):
+        return self._cursor.execute('SELECT name FROM cities WHERE id=?', (city_id,))
+
     def add_weather_subscription(self, chat_id, city):
         self.logger.log_string(LogClass.Trace,
                                'Attempting to add chat {} subscription on {} to table weather_subscriptions.'.format(
@@ -135,7 +147,22 @@ class BotDatabase(DataBase):
                                'Subscription {} to {} successfully removed from database.'.format(chat_id, domain))
 
     def remove_weather_subscription(self, chat_id, city):
-        pass
+        self.logger.log_string(LogClass.Trace,
+                               'Attempting deletion of {} subscription to weather {} from weather_subscriptions'.format(
+                                   chat_id, city))
+        try:
+            city_id = self.get_city_id_by_name(city)
+            self._cursor.execute('DELETE FROM weather_subscriptions WHERE id_chat=? AND id_city=?',
+                                 (chat_id, city_id))
+            self.commit_chages()
+        except BaseException as e:
+            error_msg = 'Error {} occurred during deletion of {} subscription to weather in {} from weather_subscriptions'.format(
+                e, chat_id, city)
+            self.logger.log_string(LogClass.Exception, error_msg)
+            raise Failure(error_msg)
+        self.logger.log_string(LogClass.Trace,
+                               'Subscription {} to weather in {} successfully removed from database.'.format(chat_id,
+                                                                                                             city))
 
 
 if __name__ == '__main__':
