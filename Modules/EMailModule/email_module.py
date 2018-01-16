@@ -58,7 +58,7 @@ class EMailProvider:
                                                                                         to_addr,
                                                                                         self._server_to_connect_to))
         try:
-            self._smtp.sendmail(from_addr, to_addr, message_to_send)
+            self._smtp.sendmail(from_addr, to_addr, message_to_send.encode())
         except smtplib.SMTPException:
             error_msg = 'Failed to send message from {} to {} on {}'.format(from_addr, to_addr,
                                                                             self._server_to_connect_to)
@@ -74,5 +74,6 @@ class EMailProvider:
 if __name__ == '__main__':
     emp = EMailProvider()
     emp.authorize(login, password)
-    emp.send_email(from_addr=login, to_addr='leonov2424@mail.ru', message='Subject: Test subject\n\nTest message')
+    emp.send_email(from_addr=login, to_addr='leonov2424@mail.ru',
+                   message='Subject: Винтовка это праздник\n\nВсё летит в пизду')
     emp.stop()

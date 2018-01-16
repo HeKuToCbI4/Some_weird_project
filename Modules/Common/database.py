@@ -12,8 +12,7 @@ class DataBase:
     def __init__(self, database):
         self.logger = Logger(name='DatabaseLogger', log_class=LogClass.Info, log_script_information=True,
                              log_to_file=True,
-                             log_name='database_log_{}.txt'.format(
-                                 datetime.datetime.now().strftime('%d_%m_%Y_%H_%M_%S')))
+                             log_name='database_log.txt')
         self.logger.log_string(LogClass.Info, 'Attempting to connect to {}'.format(database))
         try:
             self._connection = sqlite3.connect(database)

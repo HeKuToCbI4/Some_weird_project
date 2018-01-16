@@ -32,6 +32,7 @@ class Logger:
         self._lock = lock if lock is not None else Lock()
         self._log_to_file = log_to_file if log_to_file is not None else self._logger_parameters['log_to_file']
         self._log_file_name = log_name if log_name is not None else self._logger_parameters['log_name']
+        self._log_file_name += '_' + datetime.now().strftime('%d_%m_%Y_%H_%M_%S')
 
     def log_string(self, log_class, message):
         log_message = message.encode().decode('utf-8', 'ignore')
