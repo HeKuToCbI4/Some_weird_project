@@ -12,8 +12,7 @@ OneDayForecast = collections.namedtuple('OneDayForecast',
 api_key = 'eb63aec54892c8f55cdeccb05fd792fd'
 
 weather_logger = logger.Logger(name='WeatherLogger', log_class=LogClass.Info, log_script_information=True,
-                               log_to_file=True, log_name='weather_log_{}.txt'.format(
-        datetime.datetime.now().strftime('%d_%m_%Y_%H_%M_%S')))
+                               log_to_file=True, log_name='weather_log.txt')
 
 
 def get_city_id(city):

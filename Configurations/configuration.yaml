@@ -5,8 +5,12 @@ loggers:
     log_script_information: yes
     log_to_file: no
     log_name: 'logfile.txt'
-  not_default_logger:
-    name: 'SOME'
+  VK_logger:
+    name: 'VK Logger'
+    log_class: 2
+    log_script_information: yes
+    log_to_file: yes
+    log_name: 'VK_log'
 
 
 

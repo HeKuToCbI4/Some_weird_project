@@ -29,7 +29,7 @@ class Configuration:
 
     @property
     def cfg(self, custom_configuration_path=None):
-        configuration_path = os.path.join(os.path.dirname(os.path.dirname(os.getcwd())), 'Configurations',
+        configuration_path = os.path.join(r'C:\Users\leono\PycharmProjects\Some_weird_project\Configurations',
                                           'configuration.yaml') if custom_configuration_path is None else custom_configuration_path
         if Configuration.__instance is None:
             Configuration.__instance = Configuration()

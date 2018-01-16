@@ -17,8 +17,7 @@ class TelegramBot:
         self.bot = telebot.TeleBot(config.token)
         self.bot_logger = Logger(name='Bot logger', log_class=LogClass.Info, log_to_file=True,
                                  log_script_information=True,
-                                 log_name='bot_log_{}.txt'.format(
-                                     datetime.datetime.now().strftime('%d_%m_%Y_%H_%M_%S')))
+                                 log_name='bot_log.txt')
         self.vk = VkModule()
         self.monitor_posts = {}
 
