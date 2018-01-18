@@ -15,9 +15,7 @@ class EMailProvider:
         default_server = smtp_config['servers']['default_server']
         connection_timeout = smtp_config['connection_timeout']
         self._server_to_connect_to = server if server is not None else default_server
-        self.logger = Logger(name='EmailProvider {}'.format(self._server_to_connect_to), log_class=LogClass.Info,
-                             log_script_information=True,
-                             log_to_file=True, log_name='EmailProvider')
+        self.logger = Logger(name='EmailProvider {}'.format(self._server_to_connect_to))
         self.logger.log_string(LogClass.Info, 'Attempting to connect to {}'.format(self._server_to_connect_to))
         try:
             self._smtp = smtplib.SMTP(host=self._server_to_connect_to['address'],

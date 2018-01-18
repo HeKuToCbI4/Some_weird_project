@@ -13,15 +13,14 @@ class Logger:
     default_log_parameters = cfg['loggers']['default_logger']
 
     def __init__(self, name='Default Logger', *, log_class=None, log_script_information=None, lock=None,
-                 log_to_file=None,
-                 log_name=None):
+                 log_to_file=None, log_name=None):
         try:
             os.stat(default_log_location)
         except:
             os.mkdir(default_log_location)
         self._logger_parameters = None
         for logger_params in cfg['loggers'].values():
-            if logger_params['name'] == name:
+            if logger_params['name'] in name:
                 self._logger_parameters = logger_params
         if self._logger_parameters is None:
             self._logger_parameters = Logger.default_log_parameters
@@ -33,6 +32,7 @@ class Logger:
         self._log_to_file = log_to_file if log_to_file is not None else self._logger_parameters['log_to_file']
         self._log_file_name = log_name if log_name is not None else self._logger_parameters['log_name']
         self._log_file_name += '_' + datetime.now().strftime('%d_%m_%Y_%H_%M_%S')
+        self._log_file_name += '.txt'
 
     def log_string(self, log_class, message):
         log_message = message.encode().decode('utf-8', 'ignore')
@@ -41,13 +41,14 @@ class Logger:
             file_name = os.path.basename(frame_info.filename)
             time = datetime.now().strftime('%d/%m/%Y %H:%M:%S.%f')
             if self._log_script_information:
-                string = '[{time} {logger_name}: {file_name}] ({line_number}): {string}'.format(file_name=file_name,
-                                                                                                line_number=frame_info.lineno,
-                                                                                                logger_name=self._name,
-                                                                                                string=log_message,
-                                                                                                time=time)
+                string = '[{time}] {logger_name}: {file_name}] ({line_number}): {string}'.format(file_name=file_name,
+                                                                                                 line_number=frame_info.lineno,
+                                                                                                 logger_name=self._name,
+                                                                                                 string=log_message,
+                                                                                                 time=time)
             else:
-                string = '{time} {logger_name}: {string}'.format(logger_name=self._name, string=log_message, time=time)
+                string = '[{time}] {logger_name}: {string}'.format(logger_name=self._name, string=log_message,
+                                                                   time=time)
             if log_class >= self._log_class:
                 print(string)
             if self._log_to_file:

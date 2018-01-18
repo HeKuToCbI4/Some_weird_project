@@ -11,6 +11,18 @@ loggers:
     log_script_information: yes
     log_to_file: yes
     log_name: 'VK_log'
+  EmailProvider:
+    name: 'EmailProvider'
+    log_class: 2
+    log_script_information: yes
+    log_to_file: yes
+    log_name: 'EmailProvider_log'
+  DatabaseLogger:
+    name: 'DatabaseLogger'
+    log_class: 1
+    log_script_information: yes
+    log_to_file: yes
+    log_name: 'Database_log'
 
 
 

@@ -1,4 +1,3 @@
-import datetime
 import sqlite3
 
 from Modules.Common.helper import Configuration
@@ -9,10 +8,10 @@ cfg = Configuration().cfg
 
 
 class DataBase:
-    def __init__(self, database):
+    def __init__(self, database, logger=None):
         self.logger = Logger(name='DatabaseLogger', log_class=LogClass.Info, log_script_information=True,
                              log_to_file=True,
-                             log_name='database_log.txt')
+                             log_name='database_log.txt') if logger is None else logger
         self.logger.log_string(LogClass.Info, 'Attempting to connect to {}'.format(database))
         try:
             self._connection = sqlite3.connect(database)
