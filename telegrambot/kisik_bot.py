@@ -10,6 +10,7 @@ from Modules.Common.checker import Failure
 from Modules.Common.helper import LogClass
 from Modules.Common.logger import Logger
 from Modules.VkModule.vk_module import VkModule
+from Modules.VkModule.vk_wall_monitor import VkWallMonitor
 
 
 class TelegramBot:
@@ -19,6 +20,7 @@ class TelegramBot:
                                  log_script_information=True,
                                  log_name='bot_log.txt')
         self.vk = VkModule()
+        self.vk_wall_monitor = VkWallMonitor(self.vk.api)
         self.monitor_posts = {}
 
         @self.bot.message_handler(commands=['weather'])
@@ -75,7 +77,7 @@ class TelegramBot:
         try:
             last_posts_ids = []
             while self.monitor_posts[(domain, chat_id)].isSet():
-                five_last_posts = self.vk.get_n_last_wall_posts(domain=domain, count=5)
+                five_last_posts = self.vk_wall_monitor.get_n_last_wall_posts(domain=domain, count=5)
                 for post in five_last_posts:
                     if not post['id'] in last_posts_ids:
                         self.bot.send_message(chat_id, "Новый пост на странице {}:\n{}".format(domain, post['text']))

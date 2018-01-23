@@ -7,18 +7,20 @@ from Modules.Common.checker import Failure
 from Modules.Common.helper import LogClass
 from Modules.Common.logger import Logger
 from Modules.DataBaseModule.bot_database import BotDatabase
+from Modules.VkModule.vk_module import VkModule
 
 
 class VkWallMonitor:
     """
     Class used to monitor wall activities on desired domains.
     """
-
     def __init__(self, vk_api):
         self._vk_api = vk_api
         self._db_provider = BotDatabase()
         query_result = self._db_provider.get_all_domains()
-        self._monitored_domains = [].extend(query_result)
+        self._monitored_domains = []
+        for domain in query_result:
+            self._monitored_domains.append(*domain)
         self.logger = Logger(name='VK Logger')
         self._pause_monitoring = Event()
         self._updates_queue = queue.Queue()
@@ -27,18 +29,22 @@ class VkWallMonitor:
         vk_url = 'https://vk.com/' + domain
         self.logger.log_string(LogClass.Info, 'Validation URL {}'.format(vk_url))
         try:
-            resp = requests.head(vk_url)
+            resp = requests.get(vk_url)
             log_string = 'Status code: {}\tText: {}\tHeaders: {}\t'.format(resp.status_code, resp.text, resp.headers)
             self.logger.log_string(LogClass.Trace, 'Got response from {}: {}'.format(vk_url, log_string))
-            print(resp.status_code, resp.text, resp.headers)
-            if not domain in self._monitored_domains:
-                self._monitored_domains.append(domain)
-                self._db_provider.add_domain(domain)
-                self.monitor_wall(domain)
-                # TODO: add logic to monitor it.
+            if resp.status_code / 100 < 4:
+                self.logger.log_string(LogClass.Info, 'Domain {} valid.'.format(domain))
+                if not domain in self._monitored_domains:
+                    self._monitored_domains.append(domain)
+                    self._db_provider.add_domain(domain)
+                    self.monitor_wall(domain)
+                    # TODO: add logic to monitor it.
+            else:
+                self.logger.log_string(LogClass.Info, 'Domain {} is invalid!'.format(domain))
         except BaseException as e:
             error_message = '{} occurred during validating {}'.format(e, vk_url)
             self.logger.log_string(LogClass.Exception, error_message)
+            raise Failure(error_message)
 
     def get_last_wall_post(self, owner_id=0, domain=None, **kwargs):
         return self.get_n_last_wall_posts(owner_id, domain, 1, **kwargs)[0]
@@ -82,3 +88,8 @@ class VkWallMonitor:
         if self._pause_monitoring.isSet():
             self.logger.log_string(LogClass.Info, 'Monitoring of vk wall posts continued.')
             self._pause_monitoring.clear()
+
+
+if __name__ == '__main__':
+    monitor = VkWallMonitor(VkModule().api)
+    monitor.add_domain('lasgopasgpsagpoaskpgoas')
