@@ -1,15 +1,15 @@
-import datetime
 from threading import Thread, Event
 from time import sleep
 
 import telebot
 
 import telegrambot.config as config
-import telegrambot.weather_api as weather_api
 from Modules.Common.checker import Failure
 from Modules.Common.helper import LogClass
 from Modules.Common.logger import Logger
 from Modules.VkModule.vk_module import VkModule
+from Modules.VkModule.vk_wall_monitor import VkWallMonitor
+from Modules.WeatherModule.weather_api import OWMProvider
 
 
 class TelegramBot:
@@ -19,7 +19,9 @@ class TelegramBot:
                                  log_script_information=True,
                                  log_name='bot_log.txt')
         self.vk = VkModule()
+        self.vk_wall_monitor = VkWallMonitor(self.vk.api)
         self.monitor_posts = {}
+        self.OWM_provider = OWMProvider()
 
         @self.bot.message_handler(commands=['weather'])
         def handle_weather(message):
@@ -27,12 +29,12 @@ class TelegramBot:
                 self.bot_logger.log_string(LogClass.Info, f'Got message from {message.chat.id}: {message}')
                 message_string = str(message.text).lower()
                 city = message_string.split(' ')[1]
-                weather = weather_api.get_current_weather(weather_api.get_city_id(city))
+                weather = self.OWM_provider.get_current_weather_in_city(city)
                 if weather is not None:
-                    message_to_send = 'Текуща погода: {}\nТемпература:{}\nМаксимальная температура: {}\nМинимальная температура: {}' \
-                                      '\nДавление: {}\nВлажность: {}'.format(
-                        weather.description, weather.temp, weather.temp_max, weather.temp_min, weather.pressure,
-                        weather.humidity)
+                    message_to_send = 'Текуща погода: {}\nТемпература: {} град. цельсия\nДавление: {} мм.рт.ст.\n' \
+                                      'Влажность: {}\nВосход: {}\nЗакат: {}\nВетер: {} м/c'.format(
+                        weather.description, weather.temp, weather.pressure,
+                        weather.humidity, weather.sunrise, weather.sunset, weather.wind)
                 else:
                     message_to_send = 'Возникла ошибка, соси хуй!'
                 self.bot.send_message(message.chat.id, message_to_send)
@@ -75,7 +77,7 @@ class TelegramBot:
         try:
             last_posts_ids = []
             while self.monitor_posts[(domain, chat_id)].isSet():
-                five_last_posts = self.vk.get_n_last_wall_posts(domain=domain, count=5)
+                five_last_posts = self.vk_wall_monitor.get_n_last_wall_posts(domain=domain, count=5)
                 for post in five_last_posts:
                     if not post['id'] in last_posts_ids:
                         self.bot.send_message(chat_id, "Новый пост на странице {}:\n{}".format(domain, post['text']))
