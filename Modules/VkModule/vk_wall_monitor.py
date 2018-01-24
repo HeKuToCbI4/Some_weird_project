@@ -1,14 +1,13 @@
 import queue
 from threading import Thread, Event
 
-import requests
-
 from Modules.Common.checker import Failure
 from Modules.Common.helper import LogClass
 from Modules.Common.logger import Logger
 from Modules.DataBaseModule.bot_database import BotDatabase
 from Modules.VkModule.vk_module import VkModule
-
+import time
+from Modules.Common.url_validator import URLValidator
 
 class VkWallMonitor:
     """
@@ -23,28 +22,19 @@ class VkWallMonitor:
             self._monitored_domains.append(*domain)
         self.logger = Logger(name='VK Logger')
         self._pause_monitoring = Event()
+        self._stop_monitoring = Event()
         self._updates_queue = queue.Queue()
+        self._url_validator = URLValidator()
 
     def add_domain(self, domain):
         vk_url = 'https://vk.com/' + domain
-        self.logger.log_string(LogClass.Info, 'Validation URL {}'.format(vk_url))
-        try:
-            resp = requests.get(vk_url)
-            log_string = 'Status code: {}\tText: {}\tHeaders: {}\t'.format(resp.status_code, resp.text, resp.headers)
-            self.logger.log_string(LogClass.Trace, 'Got response from {}: {}'.format(vk_url, log_string))
-            if resp.status_code / 100 < 4:
-                self.logger.log_string(LogClass.Info, 'Domain {} valid.'.format(domain))
-                if not domain in self._monitored_domains:
-                    self._monitored_domains.append(domain)
-                    self._db_provider.add_domain(domain)
-                    self.monitor_wall(domain)
-                    # TODO: add logic to monitor it.
-            else:
-                self.logger.log_string(LogClass.Info, 'Domain {} is invalid!'.format(domain))
-        except BaseException as e:
-            error_message = '{} occurred during validating {}'.format(e, vk_url)
-            self.logger.log_string(LogClass.Exception, error_message)
-            raise Failure(error_message)
+        if self._url_validator.validate_url(vk_url):
+            if not domain in self._monitored_domains:
+                self._monitored_domains.append(domain)
+                self._db_provider.add_domain(domain)
+                self.monitor_wall(domain)
+        else:
+            self.logger.log_string(LogClass.Info, 'Invalid domain {} entered!'.format(domain))
 
     def get_last_wall_post(self, owner_id=0, domain=None, **kwargs):
         return self.get_n_last_wall_posts(owner_id, domain, 1, **kwargs)[0]
@@ -76,8 +66,14 @@ class VkWallMonitor:
         last_20_posts = self.get_n_last_wall_posts(domain=domain, count=20)
         for post in last_20_posts:
             last_posts_id.append(post['id'])
-        while not self._pause_monitoring.isSet:
-            pass
+        while not self._stop_monitoring.isSet:
+            while not self._pause_monitoring.isSet and not self._stop_monitoring.isSet:
+                time.sleep(60)
+                last_posts = self.get_n_last_wall_posts(domain=domain, count=10)
+                for post in last_posts:
+                    if not post['id'] in last_posts_id:
+                        self._updates_queue.put({domain: post})
+                        last_posts_id.append(post['id'])
 
     def pause_monitoring(self):
         self.logger.log_string(LogClass.Info, 'Monitoring of vk wall posts is paused.')
@@ -89,7 +85,12 @@ class VkWallMonitor:
             self.logger.log_string(LogClass.Info, 'Monitoring of vk wall posts continued.')
             self._pause_monitoring.clear()
 
+    def stop_monitoring(self):
+        self._stop_monitoring.set()
+
 
 if __name__ == '__main__':
     monitor = VkWallMonitor(VkModule().api)
-    print(monitor.get_last_wall_post(domain='nycoffee_samara'))
+    monitor.add_domain('nycoffee_samara')
+    monitor.add_domain('loloveless')
+    monitor.add_domain('ASJGOAISHOIASIJHOIA')

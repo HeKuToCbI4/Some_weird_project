@@ -27,8 +27,13 @@ class BotDatabase(DataBase):
     def get_weather_subscriptions(self, chat_id):
         return self._cursor.execute('SELECT * FROM weather_subscriptions WHERE id_chat=?', (chat_id,)).fetchall()
 
-    def get_vk_subscriptions(self, chat_id):
-        return self._cursor.execute('SELECT * FROM vk_wall_subscriptions WHERE id_chat=?', (chat_id,)).fetchall()
+    def get_vk_subscriptions_by_chat_id(self, chat_id):
+        return self._cursor.execute('SELECT id_domain FROM vk_wall_subscriptions WHERE id_chat=?',
+                                    (chat_id,)).fetchall()
+
+    def get_chats_subscribed_to_domain(self, domain):
+        return self._cursor.execute('SELECT id_chat FROM vk_wall_subscriptions WHERE id_domain=?',
+                                    (self.get_wall_id_by_domain(domain),)).fetchall()
 
     def get_domain_by_id(self, domain_id):
         id_domain = self._cursor.execute('SELECT domain FROM vk_walls WHERE id=?', (domain_id,)).fetchone()
