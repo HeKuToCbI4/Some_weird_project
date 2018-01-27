@@ -8,7 +8,7 @@ from Modules.Common.checker import Failure
 from Modules.Common.helper import LogClass
 from Modules.Common.logger import Logger
 from Modules.VkModule.vk_module import VkModule
-from Modules.VkModule.vk_wall_monitor import VkWallMonitor
+from Modules.VkModule.WallMonitor.vk_wall_monitor import VkWallMonitor
 from Modules.WeatherModule.weather_api import OWMProvider
 
 

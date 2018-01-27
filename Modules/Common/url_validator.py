@@ -17,7 +17,7 @@ class URLValidator:
                 resp = requests.get(url)
             else:
                 resp = requests.head(url)
-            log_string = 'Status code: {}\tText: {}\tHeaders: {}\t'.format(resp.status_code, resp.text, resp.headers)
+            log_string = 'Status code: {}\nHeaders: {}'.format(resp.status_code, resp.headers)
             self.logger.log_string(LogClass.Trace, 'Got response from {}: {}'.format(url, log_string))
             if resp.status_code / 100 < 4:
                 self.logger.log_string(LogClass.Info, 'URL {} valid.'.format(url))
