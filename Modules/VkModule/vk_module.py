@@ -1,19 +1,19 @@
 import vk_api
 
-from Configurations.vk_module_config import login, password, app_access_token
+from Modules.Common.helper import Configuration
 from Modules.Common.checker import Failure
 from Modules.Common.helper import LogClass
 from Modules.Common.logger import Logger
 
-
+cfg = Configuration().cfg
+vk_config = cfg.private['vk']
 class VkModule:
     """Module used to provide access to Vk and return API"""
-
     def __init__(self, custom_login=None, custom_password=None, token=None, use_token=True):
         self.logger = Logger(name='VK Logger')
-        self._password = password if custom_password is None else custom_password
-        self._login = login if custom_login is None else custom_login
-        self._token = token if token is not None else app_access_token
+        self._password = vk_config['password'] if custom_password is None else custom_password
+        self._login = vk_config['login'] if custom_login is None else custom_login
+        self._token = token if token is not None else vk_config['api_key']
         self.logger.log_string(LogClass.Trace, "Attempting to perform authentication with {}".format(
             self._login if not use_token else 'token'))
         if use_token:

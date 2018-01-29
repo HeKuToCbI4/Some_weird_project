@@ -1,10 +1,7 @@
 import sqlite3
 
-from Modules.Common.helper import Configuration
 from Modules.Common.helper import LogClass
 from Modules.Common.logger import Logger
-
-cfg = Configuration().cfg
 
 
 class DataBase:

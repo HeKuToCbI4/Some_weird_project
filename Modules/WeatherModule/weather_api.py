@@ -4,12 +4,12 @@ import datetime
 import pyowm
 import pytz
 
-from Configurations.open_weather_config import api_key
 from Modules.Common import logger
-from Modules.Common.helper import LogClass
+from Modules.Common.helper import LogClass, Configuration
 
 OneDayForecast = collections.namedtuple('OneDayForecast',
                                         'description temp wind pressure humidity sunrise sunset')
+api_key = Configuration().cfg.private['open_weather']['api_key']
 
 
 class OWMProvider:
@@ -27,7 +27,6 @@ class OWMProvider:
         result = OneDayForecast(weather.get_status(), weather.get_temperature('celsius')['temp'],
                                 weather.get_wind()['speed'], weather.get_pressure()['press'], weather.get_humidity(),
                                 sunrise, sunset)
-        print(result)
         return result
 
 

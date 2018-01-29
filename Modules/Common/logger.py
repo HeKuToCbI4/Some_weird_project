@@ -4,13 +4,14 @@ from inspect import currentframe, getframeinfo
 from threading import Lock
 
 from Modules.Common.helper import Configuration
+from definitions import HOME
 
 cfg = Configuration().cfg
-default_log_location = 'C:/telegram_bot_logs/'
+default_log_location = os.path.join(HOME, 'telegram_bot_logs')
 
 
 class Logger:
-    default_log_parameters = cfg['loggers']['default_logger']
+    default_log_parameters = cfg.public['loggers']['default_logger']
 
     def __init__(self, name='Default Logger', *, log_class=None, log_script_information=None, lock=None,
                  log_to_file=None, log_name=None):
@@ -19,7 +20,7 @@ class Logger:
         except:
             os.mkdir(default_log_location)
         self._logger_parameters = None
-        for logger_params in cfg['loggers'].values():
+        for logger_params in cfg.public['loggers'].values():
             if logger_params['name'] in name:
                 self._logger_parameters = logger_params
         if self._logger_parameters is None:

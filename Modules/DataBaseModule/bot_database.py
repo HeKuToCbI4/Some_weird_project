@@ -1,15 +1,19 @@
+import os
+
 from Modules.Common.checker import Failure
 from Modules.Common.database import DataBase
 from Modules.Common.helper import Configuration
 from Modules.Common.helper import LogClass
 from Modules.Common.logger import Logger
+from definitions import DATABASE_PATH
 
 cfg = Configuration().cfg
 
 
 class BotDatabase(DataBase):
     def __init__(self, database=None):
-        database_path = database if database is not None else cfg['databases']['default_db']
+        database_path = database if database is not None else os.path.join(DATABASE_PATH,
+                                                                           cfg.public['databases']['default_db'])
         self.logger = Logger(name='DatabaseLogger', log_name='BotDatabase_log')
         super().__init__(database_path, self.logger)
 

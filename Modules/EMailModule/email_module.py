@@ -1,13 +1,12 @@
 import smtplib
 
-from Configurations.google_mail_config import login, password
 from Modules.Common.checker import Failure
 from Modules.Common.helper import Configuration
 from Modules.Common.helper import LogClass
 from Modules.Common.logger import Logger
 
 cfg = Configuration().cfg
-smtp_config = cfg['smtp_servers']
+smtp_config = cfg.public['smtp_servers']
 
 
 class EMailProvider:
@@ -71,7 +70,7 @@ class EMailProvider:
 
 if __name__ == '__main__':
     emp = EMailProvider()
-    emp.authorize(login, password)
-    emp.send_email(from_addr=login, to_addr='leonov2424@mail.ru',
+    emp.authorize(cfg.private['google_smtp']['login'], cfg.private['google_smtp']['password'])
+    emp.send_email(from_addr=cfg.private['google_smtp']['login'], to_addr='leonov2424@mail.ru',
                    message='Subject: Винтовка это праздник\n\nВсё летит в пизду')
     emp.stop()
