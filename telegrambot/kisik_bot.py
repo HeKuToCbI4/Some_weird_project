@@ -38,7 +38,7 @@ class TelegramBot:
                 else:
                     message_to_send = 'Возникла ошибка, соси хуй!'
                 self.bot.send_message(message.chat.id, message_to_send)
-                log_string = 'Sent message: {message_to_send}'.format(message_to_send=message.text)
+                log_string = 'Sent message: {message_to_send}'.format(message_to_send=message_to_send)
                 self.bot_logger.log_string(LogClass.Info, log_string)
             except BaseException as e:
                 self.bot_logger.log_string(LogClass.Exception, 'Возникла ошибка при обработке погоды'.format(e))
