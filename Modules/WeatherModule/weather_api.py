@@ -20,16 +20,30 @@ class OWMProvider:
         self._tz = pytz.timezone(timezone)
 
     def get_current_weather_in_city(self, city):
+        self._logger.log_string(LogClass.Info, 'Getting current weather in {}'.format(city))
         observation = self._owm_api.weather_at_place(city)
         weather = observation.get_weather()
         sunrise = self._tz.localize(datetime.datetime.fromtimestamp(weather.get_sunrise_time())).strftime('%H:%M:%S %Z')
         sunset = self._tz.localize(datetime.datetime.fromtimestamp(weather.get_sunset_time())).strftime('%H:%M:%S %Z')
         result = OneDayForecast(weather.get_status(), weather.get_temperature('celsius')['temp'],
-                                weather.get_wind()['speed'], weather.get_pressure()['press'], weather.get_humidity(),
+                                weather.get_wind()['speed'], weather.get_pressure()['press'] * 750.1 // 1000,
+                                weather.get_humidity(),
                                 sunrise, sunset)
+        self._logger.log_string(LogClass.Info, 'Successfully got current weather in {}'.format(city))
         return result
+
+    def get_daily_forecast_in_city(self, city):
+        self._logger.log_string(LogClass.Info, 'Getting three-hours forecast in {}'.format(city))
+        forecast = self._owm_api.three_hours_forecast(city).get_forecast()
+        for weather in forecast.get_weathers():
+            result = OneDayForecast(weather.get_status(), weather.get_temperature('celsius')['temp'],
+                                    weather.get_wind()['speed'], weather.get_pressure()['press'] * 750.1 // 1000,
+                                    weather.get_humidity(),
+                                    None, None)
+            print(result)
+        ### TODO: Most cold, hot, humid, windy, snowy, snow, rain, and so on.
 
 
 if __name__ == '__main__':
     wp = OWMProvider()
-    wp.get_current_weather_in_city('samara')
+    res = wp.get_daily_forecast_in_city('samara')

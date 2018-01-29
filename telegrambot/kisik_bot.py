@@ -31,7 +31,7 @@ class TelegramBot:
                 city = message_string.split(' ')[1]
                 weather = self.OWM_provider.get_current_weather_in_city(city)
                 if weather is not None:
-                    message_to_send = 'Текуща погода: {}\nТемпература: {} град. цельсия\nДавление: {} мм.рт.ст.\n' \
+                    message_to_send = 'Текущая погода: {}\nТемпература: {} град. цельсия\nДавление: {} мм.рт.ст.\n' \
                                       'Влажность: {}\nВосход: {}\nЗакат: {}\nВетер: {} м/c'.format(
                         weather.description, weather.temp, weather.pressure,
                         weather.humidity, weather.sunrise, weather.sunset, weather.wind)
