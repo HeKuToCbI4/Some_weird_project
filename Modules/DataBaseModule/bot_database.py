@@ -14,7 +14,6 @@ class BotDatabase(DataBase):
     def __init__(self, database=None):
         database_path = database if database is not None else os.path.join(DATABASE_PATH,
                                                                            cfg.public['databases']['default_db'])
-        print(database_path)
         self.logger = Logger(name='DatabaseLogger', log_name='BotDatabase_log')
         super().__init__(database_path, self.logger)
 

@@ -32,18 +32,16 @@ class OWMProvider:
         self._logger.log_string(LogClass.Info, 'Successfully got current weather in {}'.format(city))
         return result
 
-    def get_daily_forecast_in_city(self, city):
+    def get_five_day_forecast_in_city(self, city):
+        # Returns forecast object which contains information for five corresponding days in %city% with three hours
+        # interval.
         self._logger.log_string(LogClass.Info, 'Getting three-hours forecast in {}'.format(city))
         forecast = self._owm_api.three_hours_forecast(city).get_forecast()
-        for weather in forecast.get_weathers():
-            result = OneDayForecast(weather.get_status(), weather.get_temperature('celsius')['temp'],
-                                    weather.get_wind()['speed'], weather.get_pressure()['press'] * 750.1 // 1000,
-                                    weather.get_humidity(),
-                                    None, None)
-            print(result)
-        ### TODO: Most cold, hot, humid, windy, snowy, snow, rain, and so on.
+        self._logger.log_string(LogClass.Info,
+                                'Successfully got forecast for five corresponding days in {}'.format(city))
+        return forecast
 
 
 if __name__ == '__main__':
     wp = OWMProvider()
-    res = wp.get_daily_forecast_in_city('samara')
+    res = wp.get_five_day_forecast_in_city('samara')
