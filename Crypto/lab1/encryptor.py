@@ -1,6 +1,6 @@
 import random
 
-from Crypto.helper import load_file, write_file
+from Crypto.lab1.helper import load_file, write_file
 
 _MODULO = 0x110000
 
@@ -37,5 +37,5 @@ def encrypt_using_alphabeet(input, lang):
 
 
 if __name__ == '__main__':
-    encrypt('plain.txt')
-    # encrypt_using_alphabeet('plain.txt', 'ru')
+    # encrypt('Tolstoy_War_and_Peace.txt')
+    encrypt_using_alphabeet('Tolstoy_War_and_Peace.txt', 'en')

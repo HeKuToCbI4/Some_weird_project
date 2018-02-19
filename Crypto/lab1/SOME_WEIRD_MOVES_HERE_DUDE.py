@@ -9,8 +9,9 @@ import requests
 
 class LanguageFrequencyAnalyzer:
     def __init__(self, language):
-        self.frequency_dictionary = pickle.load(open('{}.txt'.format(language), 'rb')) if os.path.isfile(
-            '{}.txt'.format(language)) else {}
+        path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'lang_data',
+                            '{}.txt'.format(language))
+        self.frequency_dictionary = pickle.load(open(path, 'rb')) if os.path.isfile(path) else {}
         self._lang = language
 
     def learn(self, steps, source_file=None):
@@ -61,7 +62,9 @@ class LanguageFrequencyAnalyzer:
                                      list(self.frequency_dictionary.keys())[:20]}
         print(self.frequency_dictionary.__len__())
         print(self.frequency_dictionary)
-        pickle.dump(self.frequency_dictionary, open('{}.txt'.format(self._lang), 'wb'))
+        pickle.dump(self.frequency_dictionary,
+                    open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'lang_data',
+                                      '{}.txt'.format(self._lang)), 'wb'))
         print()
 
 

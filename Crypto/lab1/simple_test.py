@@ -1,16 +1,15 @@
 import sys
 
 import requests
-import matplotlib.pyplot as plt
 
-from Crypto import encryptor, decryptor, helper
+from Crypto.lab1 import helper, encryptor, decryptor
 
 languages = ['war', 'vi', 'sv', 'sr', 'sk', 'ru', 'ro', 'pt', 'pl', 'it', 'hu', 'hr', 'fr', 'fi', 'et', 'es',
              'eo', 'en', 'de', 'da', 'cs']
 
 if __name__ == '__main__':
     percentage_of_failed_tests = []
-    lowest_border = 29
+    lowest_border = 150
     result_achieved = False
     failed_languages = []
     lowest_border += 1

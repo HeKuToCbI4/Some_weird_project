@@ -20,6 +20,7 @@ class OWMProvider:
         self._tz = pytz.timezone(timezone)
 
     def get_current_weather_in_city(self, city):
+        # Get current weather in the city
         self._logger.log_string(LogClass.Info, 'Getting current weather in {}'.format(city))
         observation = self._owm_api.weather_at_place(city)
         weather = observation.get_weather()

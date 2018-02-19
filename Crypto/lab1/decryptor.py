@@ -2,8 +2,8 @@ from collections import OrderedDict
 from collections import namedtuple
 from operator import itemgetter
 
-from Crypto.SOME_WEIRD_MOVES_HERE_DUDE import LanguageFrequencyAnalyzer
-from Crypto.helper import load_file, write_file
+from Crypto.lab1.SOME_WEIRD_MOVES_HERE_DUDE import LanguageFrequencyAnalyzer
+from Crypto.lab1.helper import load_file, write_file
 
 OffsetLang = namedtuple('OffsetLang', 'lang offset weight most_frequent')
 
@@ -40,13 +40,14 @@ def calculate_offset(cyphered, lang, use_alphabet=False):
                 shift = (ord(ch) - ord(char) + modulo) % modulo
             else:
                 if char in alphabet:
-                    shift = (alphabet.index(ch) - alphabet.index(char) + modulo) % modulo
+                    shift = (alphabet.index(ch) - alphabet.index(char) + len(alphabet)) % len(alphabet)
                 else:
                     shift = 0
             if shift not in possible_shifts.keys() and shift != 0:
                 possible_shifts[shift] = 1
             elif shift != 0:
                 possible_shifts[shift] += 1
+
     shift_dict = OrderedDict(
         sorted(possible_shifts.items(), key=itemgetter(1), reverse=True))
     if shift_dict.__len__() > 0:
@@ -57,7 +58,6 @@ def calculate_offset(cyphered, lang, use_alphabet=False):
 def decrypt_alphabet_only(input):
     alphabet_ru = ''.join([chr(c) for c in range(1072, 1104)])
     alphabet_en = ''.join([chr(c) for c in range(97, 123)])
-
     cyphered = load_file(input)
     lang = 'en' if any(c for c in cyphered if c in alphabet_en) else 'ru'
     result = ''
@@ -111,5 +111,5 @@ def decrypt(file, lang=None):
 
 
 if __name__ == '__main__':
-    decrypt('cyphered.txt')
-    # decrypt_alphabet_only('cyphered.txt')
+    # decrypt('cyphered.txt')
+    decrypt_alphabet_only('cyphered.txt')
